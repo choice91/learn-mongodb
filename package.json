@@ -1,0 +1,28 @@
+{
+  "name": "learn-mongodb",
+  "version": "1.0.0",
+  "description": "learn mongodb",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choice91/learn-mongodb.git"
+  },
+  "author": "LST",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/choice91/learn-mongodb/issues"
+  },
+  "homepage": "https://github.com/choice91/learn-mongodb#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "mongoose": "^6.0.10",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
