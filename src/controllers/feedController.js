@@ -16,18 +16,27 @@ exports.getPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
+  console.log("req.file ::", req.file);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Validation fail, entered data is incorrect.");
     error.statusCode = 422;
     throw error;
   }
-  const { title, content } = req.body;
+  if (!req.file) {
+    const error = new Error("No image provided");
+    error.statusCode = 422;
+    throw error;
+  }
+  const {
+    body: { title, content },
+    file: { path: imageUrl },
+  } = req;
   try {
     const post = await Post.create({
       title,
       content,
-      imageUrl: "images/bgimage.jpg",
+      imageUrl: imageUrl.replace("\\", "/"),
       creator: { name: "LST" },
     });
     if (!post) {
