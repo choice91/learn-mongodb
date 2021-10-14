@@ -1,7 +1,8 @@
-require("./db");
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
+require("dotenv").config();
+require("./db");
 
 const feedRoutes = require("./routes/feedRouter");
 
