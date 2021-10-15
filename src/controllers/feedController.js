@@ -9,14 +9,24 @@ const clearImage = (filePath) => {
 };
 
 exports.getPosts = async (req, res, next) => {
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
   try {
-    const posts = await Post.find({});
-    return res
-      .status(200)
-      .json({ ok: true, message: "Fetched posts successfully", posts });
+    const count = await Post.find({}).countDocuments();
+    totalItems = count;
+    const posts = await Post.find({})
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+    return res.status(200).json({
+      ok: true,
+      message: "Fetched posts successfully",
+      posts,
+      totalItems,
+    });
   } catch (error) {
-    if (error.statusCode) {
-      error.statusCode = 500;
+    if (!error.statusCode) {
+      err.statusCode = 500;
     }
     next(error);
   }
@@ -113,6 +123,27 @@ exports.updatePost = async (req, res, next) => {
     post.content = content;
     await post.save();
     return res.status(200).json({ message: "Post updated", post });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Could not find post");
+      error.statusCode = 404;
+      throw error;
+    }
+    clearImage(post.imageUrl);
+    const result = await Post.findByIdAndRemove(postId);
+    console.log(result);
+    return res.status(200).json({ message: "Delete post" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
