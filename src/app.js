@@ -6,7 +6,8 @@ const cors = require("cors");
 require("dotenv").config();
 require("./db");
 
-const feedRoutes = require("./routes/feedRouter");
+const feedRouter = require("./routes/feedRouter");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 const logger = morgan("dev");
@@ -52,12 +53,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/feed", feedRoutes);
+app.use("/feed", feedRouter);
+app.use("/auth", authRouter);
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  return res.status(status).json({ message });
+  const data = error.data;
+  return res.status(status).json({ message, data });
 });
 
 app.listen(app.get("port"), () =>

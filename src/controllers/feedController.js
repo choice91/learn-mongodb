@@ -26,7 +26,7 @@ exports.getPosts = async (req, res, next) => {
     });
   } catch (error) {
     if (!error.statusCode) {
-      err.statusCode = 500;
+      error.statusCode = 500;
     }
     next(error);
   }
