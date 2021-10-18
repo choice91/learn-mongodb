@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator/check");
+
 const Post = require("../models/post");
+const User = require("../models/user");
 
 const clearImage = (filePath) => {
   filePath = path.join(__dirname, "..", "..", filePath);
@@ -48,19 +50,25 @@ exports.createPost = async (req, res, next) => {
     body: { title, content },
     file: { path: imageUrl },
   } = req;
+  let creator;
   try {
     const post = await Post.create({
       title,
       content,
       imageUrl: imageUrl.replace("\\", "/"),
-      creator: { name: "LST" },
+      creator: req.userId,
     });
     if (!post) {
       return res.json({ message: "Post created fail!" });
     }
+    const user = await User.findById(req.userId);
+    creator = user;
+    user.posts.push(post);
+    await user.save();
     return res.status(201).json({
       message: "Post created successfully!",
       post,
+      creator: { _id: creator._id, name: creator.name },
     });
   } catch (error) {
     if (error.statusCode) {
