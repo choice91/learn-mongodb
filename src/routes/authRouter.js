@@ -1,7 +1,11 @@
 const express = require("express");
 const { body } = require("express-validator/check");
 
-const { signup, login } = require("../controllers/authController");
+const {
+  signup,
+  emailVerified,
+  login,
+} = require("../controllers/authController");
 
 const User = require("../models/user");
 
@@ -29,6 +33,7 @@ router.put(
   ],
   signup
 );
+router.get("/verification/:userId", emailVerified);
 router.post("/login", login);
 
 module.exports = router;
