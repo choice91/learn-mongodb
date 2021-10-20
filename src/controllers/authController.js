@@ -44,6 +44,7 @@ exports.signup = async (req, res, next) => {
                 <a href='http://localhost:4000/auth/verification/${user._id}'>이메일 인증하기</a>
               </div>`,
     };
+    // 이메일 전송
     const info = await transporter.sendMail(mailOptions);
     console.log(info);
     return res
@@ -90,7 +91,7 @@ exports.login = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    if (!user.emailVerified) {
+    if (!user.socialOnly && !user.emailVerified) {
       const error = new Error(
         "Your email has not been authenticated. Please verify your email."
       );

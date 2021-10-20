@@ -3,11 +3,14 @@ const morgan = require("morgan");
 const path = require("path");
 const multer = require("multer");
 const cors = require("cors");
+const passport = require("passport");
+const passportConfig = require("./passport");
 require("dotenv").config();
 require("./db");
 
 const feedRouter = require("./routes/feedRouter");
 const authRouter = require("./routes/authRouter");
+const oAuthRouter = require("./routes/oAuthRouter");
 
 const app = express();
 const logger = morgan("dev");
@@ -38,6 +41,7 @@ app.set("port", process.env.PORT || 4000);
 app.use(logger);
 app.use(express.json());
 app.use(cors());
+app.use(passport.initialize());
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
@@ -52,9 +56,11 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+passportConfig();
 
 app.use("/feed", feedRouter);
 app.use("/auth", authRouter);
+app.use("/oauth", oAuthRouter);
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;

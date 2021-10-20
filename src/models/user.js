@@ -7,21 +7,28 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   name: {
     type: String,
     required: true,
   },
-  status: {
-    type: String,
-    required: true,
-    default: "I am new!",
-  },
   emailVerified: {
     type: Boolean,
     required: true,
     default: false,
+  },
+  socialOnly: {
+    type: Boolean,
+    default: false,
+  },
+  provider: {
+    type: String,
+    required: true,
+    default: "local",
+  },
+  socialId: {
+    type: String,
+    required: false,
   },
   posts: [
     {
